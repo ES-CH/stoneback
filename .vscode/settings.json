@@ -1,0 +1,15 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "python.formatting.provider": "autopep8",
+  "flake8.args": [
+    "--ignore=E501,F522,W504"
+  ],
+  "python.formatting.autopep8Args": [
+    "--max-line-length",
+    "100",
+    "--experimental"
+  ]
+}
