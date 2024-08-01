@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from simple_history import register
 
 
 # Create your models here.
@@ -15,6 +14,3 @@ class Company(models.Model):
 
     def __str__(self):
         return u'%s' % self.name
-
-
-register(Company)

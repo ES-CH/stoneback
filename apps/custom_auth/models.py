@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator
 from django.db import models
-from simple_history import register
 
 
 class User(AbstractUser):
@@ -11,6 +10,3 @@ class User(AbstractUser):
 
     def user_can_retrieve_me(self, obj, user):
         return obj.id == user.id or user.groups.filter(name='admin').exists() or user.is_superuser
-
-
-register(User)
