@@ -16,3 +16,11 @@ class ActiveRecordsFilter(filters.BaseFilterBackend):
         if is_admin and is_active == "false":
             queryset = queryset.filter(is_active=False)
         return queryset
+
+
+class UserRecordsFilter(filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        user = request.user
+        if user and not is_superadmin(user):
+            queryset = queryset.filter(id=user.id)
+        return queryset
