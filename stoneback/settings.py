@@ -40,6 +40,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'apps.custom_auth.apps.CustomAuthConfig',
     'apps.inventory.apps.InventoryConfig',
+    'apps.accounting.apps.AccountingConfig',
+    'apps.human_resources.apps.HumanResourcesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
