@@ -39,7 +39,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'apps.custom_auth.apps.CustomAuthConfig',
-    'apps.company.apps.CompanyConfig',
+    'apps.inventory.apps.InventoryConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
