@@ -8,15 +8,6 @@ from apps.custom_auth.models import User
 class AbstractUserAdmin(UserAdmin):
     fieldsets = (
         *UserAdmin.fieldsets,
-        (
-            'Custom fields',
-            {
-                'fields': (
-                    'identification_number',
-                    'phone_number'
-                ),
-            },
-        ),
     )
 
 

@@ -2,10 +2,22 @@
 from apps.custom_auth.filters_backend import ActiveRecordsFilter
 from apps.custom_auth.permissions import (CustomDjangoModelPermissions,
                                           PermissionView)
-from apps.inventory.models import Inventory
-from apps.inventory.serializers import InventorySerializer
+from apps.inventory.models import Company, Inventory
+from apps.inventory.serializers import CompanySerializer, InventorySerializer
 
 # Create your views here.
+
+
+class CompanyViewSet(PermissionView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+    permission_classes = (CustomDjangoModelPermissions,)
+    filter_backends = [ActiveRecordsFilter]
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return CompanySerializer
+        return CompanySerializer
 
 
 class InventoryViewSet(PermissionView):
