@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.response import Response
@@ -20,10 +21,9 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         if response.status_code == 401:
             username = request.data["username"]
             user = User.objects.filter(username=username).first()
-            if user:
-                if not user.is_active:
-                    response.data["disabled"] = _("User account is disabled.")
-                    return super().finalize_response(request, response, *args, **kwargs)
+            if user and not user.is_active:
+                response.data["disabled"] = _("User account is disabled.")
+                return super().finalize_response(request, response, *args, **kwargs)
         if response.data.get("refresh"):
             cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
@@ -77,6 +77,7 @@ class UserViewSet(PermissionView):
                 {"password": ["This field is required."]},
                 status.HTTP_400_BAD_REQUEST,
             )
+        request.data["password"] = make_password(password)
         process_email = str(email).strip().lower() if email else None
         request.data["username"] = process_email
         request.data["email"] = process_email
@@ -85,5 +86,6 @@ class UserViewSet(PermissionView):
         )
         if not serializer.is_valid():
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        serializer.save()
 
         return Response(serializer.data, status.HTTP_201_CREATED)
