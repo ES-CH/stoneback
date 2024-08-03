@@ -13,7 +13,7 @@ from apps.custom_auth.models import User
 from apps.custom_auth.permissions import PermissionView, Roles
 from apps.custom_auth.serializers import (MyTokenObtainPairSerializer,
                                           UserSerializer)
-from apps.custom_auth.utils import validate_roles
+from apps.custom_auth.utils import validate_permissions, validate_roles
 
 # Create your views here.
 
@@ -45,11 +45,17 @@ class CookieTokenObtainPairView(TokenObtainPairView):
             user = User.objects.filter(username=username).first()
             current_permissions = list(
                 user.get_all_permissions()) if user else []
+            current_groups = list(user.get_group_permissions()) if user else []
             permissions = []
             for permission in current_permissions:
                 if "historical" not in permission:
                     permissions.append(permission.split(".")[-1])
+            groups = []
+            for group in current_groups:
+                if "historical" not in group:
+                    groups.append(group.split(".")[-1])
             response.data["permissions"] = permissions
+            response.data["groups"] = groups
         return super().finalize_response(request, response, *args, **kwargs)
 
 
@@ -61,6 +67,7 @@ class UserViewSet(PermissionView):
     allowed_permissions = {
         "create": [Roles.ANY],
         "assign_role": [Roles.ANY],
+        "assign_permission": [Roles.ANY],
     }
 
     def create(self, request):
@@ -94,6 +101,38 @@ class UserViewSet(PermissionView):
         serializer.save()
 
         return Response(serializer.data, status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=["POST"], url_path='assign-permission', url_name='assign_permission')
+    def assign_permission(self, request, pk=None):
+        """
+        Assign permission to a user
+        request body:
+        {
+            "permissions": [
+                {
+                    "model": "model_name", *required
+                    "actions": ["view", "add", "change", "delete"] *minimum one action is required
+                }
+            ]
+        }
+        """
+        user = get_object_or_404(User, pk=pk)
+        permissions = request.data.get("permissions", [])
+        if not permissions:
+            return Response(
+                {"permissions": ["This field is required."]},
+                status.HTTP_400_BAD_REQUEST,
+            )
+        permissions = validate_permissions(permissions)
+        if not all(isinstance(permission, int) for permission in permissions):
+            return Response(
+                permissions,
+                status.HTTP_400_BAD_REQUEST,
+            )
+        user.user_permissions.clear()
+        user.user_permissions.set(permissions)
+        user.save()
+        return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["POST"], url_path="assign-role", url_name="assign_role")
     def assign_role(self, request, pk=None):

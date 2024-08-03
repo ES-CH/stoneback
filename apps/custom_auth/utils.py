@@ -1,7 +1,7 @@
 import jwt
 from django.apps import apps
 from django.conf import settings
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.db.models.fields.related import ForeignKey
 from django.utils import timezone
 from rest_framework import status
@@ -45,3 +45,27 @@ def validate_roles(roles):
     if erros:
         return erros
     return True
+
+
+def validate_permissions(permissions):
+    erros = []
+    permissions_id = []
+    for permission in permissions:
+        if not permission.get("model"):
+            erros.append({permission: "Model is required."})
+        if len(permission.get("action")) == 0:
+            erros.append({permission: "Action is required."})
+        for action in permission.get("action"):
+            if action not in ["view", "add", "change", "delete"]:
+                erros.append({action: "Action is invalid."})
+            current_permission = Permission.objects.filter(
+                codename=f"{action}_{permission.get('model')}"
+            ).first()
+            if not current_permission:
+                erros.append(
+                    {f"{action}_{permission.get('model')}": "Permission does not exist."})
+            else:
+                permissions_id.append(current_permission.id)
+    if erros:
+        return erros
+    return permissions_id
