@@ -10,10 +10,6 @@ class EmployeeViewSet(PermissionView):
     serializer_class = EmployeeSerializer
     permission_classes = (CustomDjangoModelPermissions,)
     filter_backends = [ActiveRecordsFilter]
-    allowed_permissions = {
-        'employee_bulk_upload': ["human_resources.add_employee"],
-        'employee_report': ["human_resources.view_employee"],
-    }
 
     def get_serializer_class(self):
         if self.action == 'list':
