@@ -1,6 +1,56 @@
 - name: "admin"
-  permissions: ["add_user", "change_user", "delete_user", "view_user"]
+  permissions:
+    [
+      "add_user",
+      "change_user",
+      "delete_user",
+      "view_user",
+      "add_product",
+      "change_product",
+      "delete_product",
+      "view_product",
+      "add_inventory",
+      "change_inventory",
+      "delete_inventory",
+      "view_inventory",
+      "add_accounting",
+      "change_accounting",
+      "delete_accounting",
+      "view_accounting",
+      "add_employee",
+      "change_employee",
+      "delete_employee",
+      "view_employee",
+    ]
 
 - name: "counter"
   permissions:
-    ["add_company", "change_company", "delete_company", "view_company"]
+    [
+      "add_company",
+      "change_company",
+      "delete_company",
+      "view_company",
+      "add_inventory",
+      "change_inventory",
+      "delete_inventory",
+      "view_inventory",
+      "add_product",
+      "change_product",
+      "delete_product",
+      "view_product",
+    ]
+
+- name: "assistant"
+  permissions:
+    ["add_employee", "change_employee", "delete_employee", "view_employee"]
+
+- name: "auditor"
+  permissions:
+    [
+      "view_accounting",
+      "add_accounting",
+      "change_accounting",
+      "delete_accounting",
+      "view_accounting",
+      "view_product",
+    ]
