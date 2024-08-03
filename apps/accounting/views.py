@@ -12,10 +12,6 @@ class AccountViewSet(PermissionView):
     serializer_class = AccountingSerializer
     permission_classes = (CustomDjangoModelPermissions,)
     filter_backends = [ActiveRecordsFilter]
-    allowed_permissions = {
-        'account_bulk_upload': ["accounting.add_accounting"],
-        'account_report': ["accounting.view_accounting"],
-    }
 
     def get_serializer_class(self):
         if self.action == 'list':
