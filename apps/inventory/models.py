@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 
@@ -15,7 +14,7 @@ class CommonModel(models.Model):
 
 class Company(CommonModel):
     name = models.CharField(max_length=128, unique=True, error_messages={
-                            'unique': _('This company already exists.')})
+                            'unique': 'This company already exists.'})
     nit = models.CharField(max_length=12)
 
     class Meta:

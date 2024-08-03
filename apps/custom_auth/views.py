@@ -1,7 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -26,7 +25,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
             username = request.data["username"]
             user = User.objects.filter(username=username).first()
             if user and not user.is_active:
-                response.data["disabled"] = _("User account is disabled.")
+                response.data["disabled"] = "User account is disabled."
                 return super().finalize_response(request, response, *args, **kwargs)
         if response.data.get("refresh"):
             cookie_max_age = 3600 * 24  # 1 day
@@ -64,6 +63,14 @@ class UserViewSet(PermissionView):
     }
 
     def create(self, request):
+        """
+        Create a new user
+        request body:
+        {
+            "email": "test@test.com", *required
+            "password": "password", *required
+        }
+        """
         email = request.data.get("email", None)
         if not email:
             return Response(
