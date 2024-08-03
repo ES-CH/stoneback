@@ -48,24 +48,59 @@ def validate_roles(roles):
 
 
 def validate_permissions(permissions):
-    erros = []
+    errors = []
     permissions_id = []
+
     for permission in permissions:
-        if not permission.get("model"):
-            erros.append({permission: "Model is required."})
-        if len(permission.get("action")) == 0:
-            erros.append({permission: "Action is required."})
-        for action in permission.get("action"):
+        model_errors = validate_model(permission)
+        action_errors, valid_actions = validate_actions(permission)
+
+        errors.extend(model_errors)
+        errors.extend(action_errors)
+
+        if not model_errors and not action_errors:
+            permissions_id.extend(get_permission_ids(
+                permission, valid_actions, errors))
+
+    if errors:
+        return errors
+    return permissions_id
+
+
+def validate_model(permission):
+    errors = []
+    if not permission.get("model"):
+        errors.append({permission.get("model"): "Model is required."})
+    return errors
+
+
+def validate_actions(permission):
+    errors = []
+    valid_actions = []
+    actions = permission.get("action")
+
+    if not actions:
+        errors.append({permission.get("model"): "Action is required."})
+    elif len(actions) == 0:
+        errors.append({permission.get("model"): "Action is required."})
+    else:
+        for action in actions:
             if action not in ["view", "add", "change", "delete"]:
-                erros.append({action: "Action is invalid."})
-            current_permission = Permission.objects.filter(
-                codename=f"{action}_{permission.get('model')}"
-            ).first()
-            if not current_permission:
-                erros.append(
-                    {f"{action}_{permission.get('model')}": "Permission does not exist."})
+                errors.append({"action": "Action is invalid."})
             else:
-                permissions_id.append(current_permission.id)
-    if erros:
-        return erros
+                valid_actions.append(action)
+    return errors, valid_actions
+
+
+def get_permission_ids(permission, valid_actions, errors):
+    permissions_id = []
+    for action in valid_actions:
+        current_permission = Permission.objects.filter(
+            codename=f"{action}_{permission.get('model')}"
+        ).first()
+        if not current_permission:
+            errors.append(
+                {f"{action}_{permission.get('model')}": "Permission does not exist."})
+        else:
+            permissions_id.append(current_permission.id)
     return permissions_id
