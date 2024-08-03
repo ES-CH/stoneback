@@ -1,6 +1,9 @@
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -10,6 +13,7 @@ from apps.custom_auth.models import User
 from apps.custom_auth.permissions import PermissionView, Roles
 from apps.custom_auth.serializers import (MyTokenObtainPairSerializer,
                                           UserSerializer)
+from apps.custom_auth.utils import validate_roles
 
 # Create your views here.
 
@@ -55,7 +59,8 @@ class UserViewSet(PermissionView):
     filter_backends = [ActiveRecordsFilter, UserRecordsFilter]
 
     allowed_permissions = {
-        "create": [Roles.ANY]
+        "create": [Roles.ANY],
+        "assign_role": [Roles.ANY],
     }
 
     def create(self, request):
@@ -89,3 +94,23 @@ class UserViewSet(PermissionView):
         serializer.save()
 
         return Response(serializer.data, status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=["POST"], url_path="assign-role", url_name="assign_role")
+    def assign_role(self, request, pk=None):
+        user = get_object_or_404(User, pk=pk)
+        roles = request.data.get("roles", [])
+        if not roles:
+            return Response(
+                {"roles": ["This field is required."]},
+                status.HTTP_400_BAD_REQUEST,
+            )
+        role_exists = validate_roles(roles)
+        if role_exists is not True:
+            return Response(
+                role_exists,
+                status.HTTP_400_BAD_REQUEST,
+            )
+        user.groups.clear()
+        user.groups.set(Group.objects.filter(name__in=roles))
+        user.save()
+        return Response(status=status.HTTP_200_OK)

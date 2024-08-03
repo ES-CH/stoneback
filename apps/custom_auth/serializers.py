@@ -1,5 +1,4 @@
-from email.headerregistry import Group
-
+from django.contrib.auth.models import Group
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.serializers import (TokenObtainPairSerializer,

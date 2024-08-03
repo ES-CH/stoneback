@@ -1,2 +1,6 @@
 - name: "admin"
   permissions: ["add_user", "change_user", "delete_user", "view_user"]
+
+- name: "counter"
+  permissions:
+    ["add_company", "change_company", "delete_company", "view_company"]

@@ -1,6 +1,7 @@
 import jwt
 from django.apps import apps
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.db.models.fields.related import ForeignKey
 from django.utils import timezone
 from rest_framework import status
@@ -33,3 +34,14 @@ def update_refresh_token_date(token):
     user = User.objects.filter(id=decodeToken["user_id"]).first()
     user.last_refresh_token_date = timezone.now()
     user.save()
+
+
+def validate_roles(roles):
+    erros = []
+    for role in roles:
+        exist = Group.objects.filter(name=role).exists()
+        if not exist:
+            erros.append({role: "Role does not exist."})
+    if erros:
+        return erros
+    return True
