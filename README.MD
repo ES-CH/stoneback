@@ -40,7 +40,14 @@ Despues de instalar las dependencias, ejecutar los siguientes comandos para inic
 El proyecto cuenta con roles predefinidos y permisos para pruebas, estos se pudene encontrar en el archivo initial_groups.yaml
 ubicado en el directorio custom_auth/fixtures.
 Para cagarlos usar el siguiente comando:
+
 `python manage.py loadperms`
+
+### Solucion propuesta
+
+Para dar solucion a el problema del sistema de seguridad implemente un sistema de autenticacion por token usando jwt donde estara almacenado los permisos y roles
+asignados a cada usuario al momento de hacer login, al momento de hacer una peticion a algun modulo la vista de ese modulo valida si tiene el rol o el permiso configurado para cada modulo configurado de esta manera se garantiza primero que solo usuarios autenticados tengan acceso a los modulos y solo los usuarios
+que cuenten con permisos especificados podran interactuar.
 
 
 ### Serivios expuestos para pruebas
