@@ -45,6 +45,8 @@ Para cagarlos usar el siguiente comando:
 
 ### Serivios expuestos para pruebas
 
+PARA PROBAR CADA SERVICIO SE RECOMIENDA USAR POSTMAN O Insomnia
+
 Crear usuario:
 
 URL: http://localhost:8000/auth/users
