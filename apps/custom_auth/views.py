@@ -38,16 +38,20 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 httponly=True,
             )
 
-        # Get and process users permissions
+        # Get and process users permissions and groups
         if response.data.get("access"):
             username = request.data["username"]
             user = User.objects.filter(username=username).first()
             current_permissions = list(
                 user.get_all_permissions()) if user else []
+            current_groups = list(user.groups.all()) if user else []
+            response.data["groups"] = [group.name for group in current_groups]
             permissions = []
             for permission in current_permissions:
                 if "historical" not in permission:
                     permissions.append(permission.split(".")[-1])
+            response.data['permissions'] = permissions
+
         return super().finalize_response(request, response, *args, **kwargs)
 
 

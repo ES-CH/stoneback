@@ -69,7 +69,7 @@ Obtener token / Verificar permissos y roles asignados
 URL: http://localhost:8000/auth/token/
 
     {
-        "email":"stone@gmail.com",
+        "username":"stone@gmail.com",
         "password":"stonepassword"
     }
 
