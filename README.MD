@@ -48,7 +48,6 @@ Para cagarlos usar el siguiente comando:
 Crear usuario:
 
 URL: http://localhost:8000/auth/users
-Body:
 
     {
         "email":"stone@gmail.com",
@@ -59,7 +58,6 @@ Body:
 Obtener token / Verificar permissos y roles asignados
 
 URL: http://localhost:8000/auth/token/
-Body:
 
     {
         "email":"stone@gmail.com",
@@ -68,9 +66,25 @@ Body:
 
 
 Asignar roles 
-Body:
+
+URL: http://localhost:8000/auth/users/id_usuario/assign-role
+
 
     {        
         "roles": ["couter"]
     }
     
+Asignar permisos
+
+URL: http://localhost:8000/auth/users/8/assign-permission
+
+    {
+        "permissions":[
+            {
+                "model":"user",
+                "action": ["view", "add"]
+            }
+            
+        ]
+    }
+
