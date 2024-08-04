@@ -73,12 +73,12 @@ URL: http://localhost:8000/auth/users/id_usuario/assign-role
 
 
     {        
-        "roles": ["couter"]
+        "roles": ["counter"]
     }
     
 Asignar permisos
 
-URL: http://localhost:8000/auth/users/8/assign-permission
+URL: http://localhost:8000/auth/users/id_usuario/assign-permission
 
     {
         "permissions":[
@@ -90,3 +90,16 @@ URL: http://localhost:8000/auth/users/8/assign-permission
         ]
     }
 
+Crear roles
+
+URL: http://localhost:8000/auth/users/create-role
+
+    {
+        "name": "prueba",
+        "permissions": [
+            {
+                "model": "employee",
+                "action": ["view", "add", "change", "delete"]
+            }
+        ]
+    }
