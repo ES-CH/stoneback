@@ -2,8 +2,6 @@ from django.db import models
 
 from apps.inventory.models import Product
 
-# Create your models here.
-
 
 class Accounting(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

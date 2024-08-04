@@ -14,8 +14,6 @@ from apps.custom_auth.serializers import (MyTokenObtainPairSerializer,
                                           UserSerializer)
 from apps.custom_auth.utils import validate_permissions, validate_roles
 
-# Create your views here.
-
 
 class CookieTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer

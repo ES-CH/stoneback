@@ -4,7 +4,6 @@ from django.contrib.auth.admin import UserAdmin
 from apps.custom_auth.models import User
 
 
-# Custom classes
 class AbstractUserAdmin(UserAdmin):
     fieldsets = (
         *UserAdmin.fieldsets,

@@ -6,8 +6,6 @@ from apps.inventory.models import Company, Inventory, Product
 from apps.inventory.serializers import (CompanySerializer, InventorySerializer,
                                         ProductSerializer)
 
-# Create your views here.
-
 
 class CompanyViewSet(PermissionView):
     queryset = Company.objects.all()

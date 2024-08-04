@@ -111,11 +111,11 @@ WSGI_APPLICATION = 'stoneback.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'stonebs',
+        'NAME': 'stonedb',
         'USER': 'postgres',
         'PASSWORD': '123456',
-        'HOST': 'localhost',  # O la dirección IP de tu servidor PostgreSQL
-        'PORT': '5432',       # El puerto por defecto de PostgreSQL
+        'HOST': 'localhost',  # or your IP address
+        'PORT': '5432',       # port number of your database
     }
 }
 

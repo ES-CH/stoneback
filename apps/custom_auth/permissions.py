@@ -17,7 +17,6 @@ class PermissionView(viewsets.ModelViewSet):
     Base class for permissions.
 
     use the `allowed_roles` property to define the allowed roles for each action.
-    use the `search_fields` property to define the fields to search in the list view.
 
     Example:
 
@@ -28,7 +27,6 @@ class PermissionView(viewsets.ModelViewSet):
             'retrieve':["custom_auth.view_user", "custom_auth.view_profile"],
             ...
         }
-        search_fields=['first_name','last_name']
     """
 
     def get_permissions(self):

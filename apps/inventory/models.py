@@ -2,8 +2,6 @@ from django.db import models
 
 from apps.custom_auth.models import CommonModel
 
-# Create your models here.
-
 
 class Company(CommonModel):
     name = models.CharField(max_length=128, unique=True, error_messages={

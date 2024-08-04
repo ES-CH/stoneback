@@ -6,7 +6,6 @@ from apps.custom_auth.permissions import (CustomDjangoModelPermissions,
                                           PermissionView)
 
 
-# Create your views here.
 class AccountViewSet(PermissionView):
     queryset = Accounting.objects.all()
     serializer_class = AccountingSerializer
