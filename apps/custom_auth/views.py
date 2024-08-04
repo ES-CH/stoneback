@@ -1,5 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
@@ -10,8 +11,9 @@ from apps.custom_auth.filters_backend import (ActiveRecordsFilter,
                                               UserRecordsFilter)
 from apps.custom_auth.models import User
 from apps.custom_auth.permissions import PermissionView, Roles
-from apps.custom_auth.serializers import (MyTokenObtainPairSerializer,
-                                          UserSerializer)
+from apps.custom_auth.serializers import (GroupSerializer,
+                                          MyTokenObtainPairSerializer,
+                                          UserListSerializer, UserSerializer)
 from apps.custom_auth.utils import validate_permissions, validate_roles
 
 
@@ -56,9 +58,16 @@ class UserViewSet(PermissionView):
 
     allowed_permissions = {
         "create": [Roles.ANY],
+        "list": [Roles.ANY],
         "assign_role": [Roles.ANY],
         "assign_permission": [Roles.ANY],
+        "create_role": [Roles.ANY],
     }
+
+    def list(self, request):
+        users = User.objects.all()
+        serializer = UserListSerializer(users, many=True)
+        return Response(serializer.data)
 
     def create(self, request):
         """
@@ -151,3 +160,50 @@ class UserViewSet(PermissionView):
         user.groups.set(Group.objects.filter(name__in=roles))
         user.save()
         return Response(status=status.HTTP_200_OK)
+
+    @transaction.atomic
+    @action(detail=False, methods=["POST"], url_path="create-role", url_name="create_role")
+    def create_role(self, request):
+        """
+        Create a new role
+        request body:
+        {
+            "name": "role_name", *required,
+            "permissions": [
+                {
+                    "model": "model_name", *required
+                    "actions": ["view", "add", "change", "delete"] *minimum one action is required
+                }
+            ]
+        }
+        """
+        name = request.data.get("name")
+        if not name:
+            return Response(
+                {"name": ["This field is required."]},
+                status.HTTP_400_BAD_REQUEST,
+            )
+        exist_role = Group.objects.filter(name=name).first()
+        if exist_role:
+            return Response(
+                {"name": ["This role is already in use."]},
+                status.HTTP_400_BAD_REQUEST,
+            )
+        permissions = request.data.get("permissions", [])
+        if not permissions:
+            return Response(
+                {"permissions": ["This field is required."]},
+                status.HTTP_400_BAD_REQUEST,
+            )
+        permissions = validate_permissions(permissions)
+        if not all(isinstance(permission, int) for permission in permissions):
+            return Response(
+                permissions,
+                status.HTTP_400_BAD_REQUEST,
+            )
+        role = Group.objects.create(name=name)
+        role.permissions.clear()
+        role.permissions.set(permissions)
+        role.save()
+        serializer = GroupSerializer(role)
+        return Response(serializer.data, status.HTTP_201_CREATED)

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.serializers import (TokenObtainPairSerializer,
@@ -34,9 +34,15 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
+    permissions = serializers.SlugRelatedField(
+        many=True,
+        queryset=Permission.objects.all(),
+        slug_field='codename'
+    )
+
     class Meta:
         model = Group
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'permissions')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -44,3 +50,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'groups', 'is_active',
+                  'is_superuser', 'user_permissions')
