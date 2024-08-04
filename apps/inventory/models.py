@@ -1,15 +1,8 @@
 from django.db import models
 
+from apps.custom_auth.models import CommonModel
+
 # Create your models here.
-
-
-class CommonModel(models.Model):
-    is_active = models.BooleanField(default=True)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
 
 
 class Company(CommonModel):

@@ -10,8 +10,3 @@ class EmployeeViewSet(PermissionView):
     serializer_class = EmployeeSerializer
     permission_classes = (CustomDjangoModelPermissions,)
     filter_backends = [ActiveRecordsFilter]
-
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return EmployeeSerializer
-        return EmployeeSerializer

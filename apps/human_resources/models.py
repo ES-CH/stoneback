@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.inventory.models import CommonModel
+from apps.custom_auth.models import CommonModel
 
 
 class Employee(CommonModel):
