@@ -49,6 +49,7 @@ Crear usuario:
 
 URL: http://localhost:8000/auth/users
 Body:
+
     {
         "email":"stone@gmail.com",
         "password":"stonepassword"
@@ -59,6 +60,7 @@ Obtener token / Verificar permissos y roles asignados
 
 URL: http://localhost:8000/auth/token/
 Body:
+
     {
         "email":"stone@gmail.com",
         "password":"stonepassword"
@@ -67,6 +69,7 @@ Body:
 
 Asignar roles 
 Body:
+
     {        
         "roles": ["couter"]
     }
