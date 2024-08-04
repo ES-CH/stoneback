@@ -41,3 +41,33 @@ El proyecto cuenta con roles predefinidos y permisos para pruebas, estos se pude
 ubicado en el directorio custom_auth/fixtures.
 Para cagarlos usar el siguiente comando:
 `python manage.py loadperms`
+
+
+### Serivios expuestos para pruebas
+
+Crear usuario:
+
+URL: http://localhost:8000/auth/users
+Body:
+    {
+        "email":"stone@gmail.com",
+        "password":"stonepassword"
+    }
+
+
+Obtener token / Verificar permissos y roles asignados
+
+URL: http://localhost:8000/auth/token/
+Body:
+    {
+        "email":"stone@gmail.com",
+        "password":"stonepassword"
+    }
+
+
+Asignar roles 
+Body:
+    {        
+        "roles": ["couter"]
+    }
+    
